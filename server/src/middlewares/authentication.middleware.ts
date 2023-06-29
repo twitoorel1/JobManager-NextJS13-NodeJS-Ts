@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { ForbiddenError, UnauthorizeError } from '../errors/Errors.js';
-import { verifyAccessToken } from '../services/jwt.services.js';
+import { ForbiddenError, UnauthorizeError } from '../errors/Errors';
+import { verifyAccessToken } from '../services/jwt.services';
 
 export const authJwtTokenVerify = (req: Request, res: Response, next: NextFunction) => {
 	try {

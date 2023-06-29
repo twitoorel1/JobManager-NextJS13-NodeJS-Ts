@@ -1,24 +1,28 @@
 import express from 'express';
-import catchAsyncError from '../errors/catchAsyncError.js';
-import { createCompany, deleteById, findById, getAllCompany, updateById } from '../controllers/company.controller.js';
-import { authRole } from '../middlewares/authentication.middleware.js';
-import { ERoles } from '../types/global.js';
+import catchAsyncError from '../errors/catchAsyncError';
+import { createCompany, deleteCompanyById, findById, findAllCompanies, updateCompanyById } from '../controllers/company.controller';
+import { authRole } from '../middlewares/authentication.middleware';
+import { ERoles } from '../types/global';
 const router = express.Router();
 
-/* CRUD
-Create (admin, employee) - Done!
-Read, Read ALL (admin, employee) - Done!
-Update(admin, employee) - Done!
-Delete(admin) - Done!
+/* CRUD - All Request For Employee And Admin Role -
+Read - FindById (By companyId) - Done!
+Read - FindAllCompanies - Done!
+
+UPDATE - UpdateCompanyById (By companyId)
+
+DELETE - DeleteCompanyById (By companyId - Only Admin Role)
+Post - CreateCompany (Only Admin Role)
 */
 
-/* Routes For Employee */
-router.get('/employee/find/:id', authRole(ERoles.employee), catchAsyncError(findById));
-router.post('/employee/create', authRole(ERoles.employee), catchAsyncError(createCompany));
-router.get('/employee/all', authRole(ERoles.employee), catchAsyncError(getAllCompany));
-router.put('/employee/update/:id', authRole(ERoles.employee), catchAsyncError(updateById));
+/* Routes For employee And Admin */
+router.get('/employee/find/:companyId', authRole(ERoles.employee), catchAsyncError(findById));
+router.get('/employee/allCompanies', authRole(ERoles.employee), catchAsyncError(findAllCompanies));
 
-/* Routes For Admin */
-router.delete('/admin/delete/:id', authRole(ERoles.admin), catchAsyncError(deleteById));
+router.put('/employee/update/:companyId', authRole(ERoles.employee), catchAsyncError(updateCompanyById));
+
+/* Routes For Only Admin */
+router.post('/admin/create', authRole(ERoles.employee), catchAsyncError(createCompany));
+router.delete('/admin/delete/:companyId', authRole(ERoles.admin), catchAsyncError(deleteCompanyById));
 
 export default router;

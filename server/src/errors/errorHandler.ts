@@ -1,16 +1,15 @@
 import { NextFunction, Response, Request } from 'express';
-import { NotFoundError, BadRequestError, ServerError, UnauthorizeError, ForbiddenError, PaymentRequiredError } from './Errors.js';
+import { NotFoundError, BadRequestError, UnauthorizeError, ForbiddenError, PaymentRequiredError } from './Errors';
 
 function generateCustomErrorResponse(res: Response, error: any, statusCode: number) {
 	return res.status(Number(statusCode)).json({
 		error: true,
 		message: error.message,
-		// stack: process.env.NODE_ENV === "development" && error.stack ? error.stack : {},
-		stack: error.stack ? error.stack : {}
+		stack: process.env.NODE_ENV === 'development' && error.stack ? error.stack : {}
 	});
 }
 
-export default function errorHandler(error: any, req: Request, res: Response, next: NextFunction) {
+function errorHandler(error: any, req: Request, res: Response, next: NextFunction) {
 	switch (error.constructor) {
 		case BadRequestError:
 			return generateCustomErrorResponse(res, error, 400);
@@ -27,33 +26,9 @@ export default function errorHandler(error: any, req: Request, res: Response, ne
 		case NotFoundError:
 			return generateCustomErrorResponse(res, error, 404);
 
-		case ServerError:
-			generateCustomErrorResponse(res, error, 500);
-
 		default:
-			res.status(500).json('Something went wrong!');
-			break;
+			return generateCustomErrorResponse(res, error, 500);
 	}
 }
 
-// function errorHandler2(error: any, req: Request, res: Response, next: NextFunction) {
-//   switch (error.constructor) {
-//     case NotFoundError:
-//       return generateCustomErrorResponse(res, error, 404);
-
-//     case UnauthorizeError:
-//       return generateCustomErrorResponse(res, error, 403);
-
-//     case BadRequestError:
-//       generateCustomErrorResponse(res, error, 400);
-//       break;
-
-//     case ServerError:
-//       generateCustomErrorResponse(res, error, 500);
-//       break;
-
-//     default:
-//       res.status(500).json("Something went wrong!");
-//       break;
-//   }
-// }
+export default errorHandler;

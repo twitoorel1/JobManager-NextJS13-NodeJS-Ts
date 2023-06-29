@@ -1,5 +1,5 @@
 import multer from 'multer';
-import { BadRequestError } from '../errors/Errors.js';
+import { BadRequestError } from '../errors/Errors';
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {

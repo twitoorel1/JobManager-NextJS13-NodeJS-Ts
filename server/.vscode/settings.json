@@ -1,3 +1,4 @@
 {
-	"cSpell.words": ["cloudinary", "fieldname", "Galit", "middlewares"]
+	"cSpell.words": ["middlewares", "Twito"],
+	"editor.defaultFormatter": "esbenp.prettier-vscode"
 }

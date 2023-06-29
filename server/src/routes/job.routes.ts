@@ -1,28 +1,34 @@
 import express from 'express';
-import catchAsyncError from '../errors/catchAsyncError.js';
-import { createJob, deleteById, findById, getAllJobsByIdCompany, getAllJobs, updateById } from '../controllers/job.controller.js';
-import { authRole } from '../middlewares/authentication.middleware.js';
-import { ERoles } from '../types/global.js';
+import catchAsyncError from '../errors/catchAsyncError';
+import { findAllJobsByIdCompany, findById, findAllJobs, createJobByIDCompany, updateJobById, updateStatusJob, deleteById } from '../controllers/job.controller';
+import { authRole } from '../middlewares/authentication.middleware';
+import { ERoles } from '../types/global';
+import { checkJobIdIfSameIdCompany, checkUserByIdCompany } from '../middlewares/user.middleware';
 const router = express.Router();
 
 /* CRUD
-Create (By ID Company) - Done!
-Read (By ID And ID Company) - Done!
-Read ALL (By Id Company) - Done!
+READ - FindById (By ID Job and ID Company) - Done!
+READ - FindAllJobsByIdCompany (By ID Company) - Done!
+READ - FindAllJobs (Employee +) - Done!
 
-Update(admin, employee - By ID And ID Company) - Done!
-Delete(admin - By ID And ID Company) - Done!
+POST - CreateJobByIDCompany (By ID Company) - Done!
+
+UPDATE - UpdateJobById (By ID Job and ID Company - Employee +) - Done!
+UPDATE(patch) - UpdateStatusJob (By ID Job and ID Company - Employee +) - Done!
+
+DELETE - DeleteById (By ID Job and ID Company - Only Admin) - Done!
 */
 
-router.get('/find/:id/:idCompany', catchAsyncError(findById));
-router.post('/create/:idCompany', catchAsyncError(createJob));
-router.get('/all/:id/:idCompany', catchAsyncError(getAllJobsByIdCompany));
+router.get('/find/:idJob/:idCompany', (req, res, next) => checkJobIdIfSameIdCompany(req.params.idJob, req.params.idCompany)(req, res, next), catchAsyncError(findById));
+router.get('/findAllJobs/:idCompany', (req, res, next) => checkUserByIdCompany(req.params.idCompany)(req, res, next), catchAsyncError(findAllJobsByIdCompany));
+router.post('/create/:idCompany', (req, res, next) => checkUserByIdCompany(req.params.idCompany)(req, res, next), catchAsyncError(createJobByIDCompany));
 
 /* Routes For Employee */
-router.get('/employee/all', authRole(ERoles.employee), catchAsyncError(getAllJobs));
-router.put('/employee/update/:id/:idCompany', authRole(ERoles.employee), catchAsyncError(updateById));
+router.put('/employee/update/:idJob/:idCompany', authRole(ERoles.employee), catchAsyncError(updateJobById));
+router.patch('/employee/updateStatus/:idJob/:idCompany', authRole(ERoles.employee), catchAsyncError(updateStatusJob));
+router.get('/employee/findAllJobs', authRole(ERoles.employee), catchAsyncError(findAllJobs));
 
 /* Routes For Admin */
-router.delete('/admin/delete/:id/:idCompany', authRole(ERoles.admin), catchAsyncError(deleteById));
+router.delete('/admin/delete/:idCompany/:idJob', authRole(ERoles.employee), (req, res, next) => checkJobIdIfSameIdCompany(req.params.idJob, req.params.idCompany)(req, res, next), catchAsyncError(deleteById));
 
 export default router;

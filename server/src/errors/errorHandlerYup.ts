@@ -6,7 +6,7 @@ interface YupError {
 	message: string;
 }
 
-const errorHandler = (err: ValidationError, req: Request, res: Response, next: NextFunction) => {
+const errorHandlerYup = (err: ValidationError, req: Request, res: Response, next: NextFunction) => {
 	if (err instanceof ValidationError) {
 		const errors: YupError[] = [];
 
@@ -23,4 +23,4 @@ const errorHandler = (err: ValidationError, req: Request, res: Response, next: N
 	return next(err);
 };
 
-export default errorHandler;
+export default errorHandlerYup;

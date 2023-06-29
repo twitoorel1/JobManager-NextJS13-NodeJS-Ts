@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { passwordRegex } from '../constants/regex.constant.js';
+import { passwordRegex } from '../constants/regex.constant';
 
 const loginRequestSchema = yup.object().shape({
 	// email: yup.string().email().required(),
@@ -8,13 +8,15 @@ const loginRequestSchema = yup.object().shape({
 });
 
 const registerRequestSchema = yup.object().shape({
-	email: yup.string().email().required('Email is required'),
-	username: yup.string().required('username is required'),
 	firstName: yup.string().required('firstName is required'),
 	lastName: yup.string().required('lastName is required'),
+	username: yup.string().required('username is required'),
+	email: yup.string().email().required('Email is required'),
 	password: yup.string().required('password is required').matches(passwordRegex, 'Password not valid'),
-	confirmPassword: yup.string().oneOf([yup.ref('password')], 'Passwords must match'),
-	phoneNumber: yup.string().required('phone number is required')
+	confirmPassword: yup
+		.string()
+		.required('Confirm Password is required')
+		.oneOf([yup.ref('password')], 'Passwords must match')
 });
 
 const editPasswordRequestSchema = yup.object().shape({
@@ -23,4 +25,8 @@ const editPasswordRequestSchema = yup.object().shape({
 	confirmPassword: yup.string().oneOf([yup.ref('newPassword')], 'Passwords must match')
 });
 
-export { registerRequestSchema, loginRequestSchema, editPasswordRequestSchema };
+const resetPasswordRequestSchema = yup.object().shape({
+	password: yup.string().required('password is required').matches(passwordRegex, 'Password not valid')
+});
+
+export { registerRequestSchema, loginRequestSchema, editPasswordRequestSchema, resetPasswordRequestSchema };

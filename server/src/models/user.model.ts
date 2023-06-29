@@ -1,79 +1,39 @@
-import { Schema, model, Types, Model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import moment from 'moment';
-import { emailRegex } from '../constants/regex.constant.js';
-import { IUser, ERoles } from '../types/global.js';
-// import path from "path";
+import { emailRegex } from '../constants/regex.constant';
+import { IUser, ERoles } from '../types/global';
 
 const userSchema: Schema<IUser> = new Schema({
-	email: {
-		type: String,
-		required: false,
-		unique: true,
-		match: [emailRegex, 'Invalid email address']
-	},
-	username: {
-		type: String,
-		required: false,
-		unique: true
-	},
-	firstName: {
-		type: String,
-		required: false
-	},
-	lastName: {
-		type: String,
-		required: false
-	},
-	password: {
-		type: String,
-		required: false
-	},
-	phoneNumber: {
-		type: String,
-		required: false
-	},
+	firstName: { type: String, required: true },
+	lastName: { type: String, required: true },
+	username: { type: String, required: true, unique: true },
+	email: { type: String, required: true, unique: true, match: [emailRegex, 'Invalid email address'] },
+	password: { type: String, required: true },
+	// role: { type: String, enum: Object.values(ERoles), default: ERoles.client },
 	role: {
 		type: String,
-		enum: Object.values(ERoles),
-		default: ERoles.client,
-		required: [false, 'Role Is Required']
+		validate: {
+			validator: function (value: string) {
+				return Object.values(ERoles).includes(value as ERoles);
+			},
+			message: 'Invalid job status'
+		},
+		default: ERoles.client
 	},
-	// company: { type: Schema.Types.ObjectId, ref: 'Company' },
-	imgSRC: {
-		type: String,
-		required: false
-		// default: path.join(process.cwd() + "/public/default-profile.png"),
-	},
-	jwt_ac_token: {
-		type: String,
-		required: false
-	},
-	jwt_rf_token: {
-		type: String,
-		required: false
-	},
-	resetToken: {
-		type: String,
-		required: false
-	},
-	expireToken: {
-		type: Date,
-		required: false
-	},
-	createdAt: {
-		type: String
-	},
-	updatedAt: {
-		type: String
-	},
-	updatedPassword: {
-		type: String
-	},
-	recentlyConnected: {
-		type: String
-	}
+	company: { type: Schema.Types.ObjectId, ref: 'Company', default: process.env.ID_COMPANY_BOEING },
+	imgSrc: { type: String },
+	// Statistic
+	jwt_ac_token: { type: String },
+	jwt_rf_token: { type: String },
+	resetToken: { type: String },
+	expireToken: { type: String },
+	updatedPassword: { type: String },
+	passwordHistory: [{ type: String }],
+	recentlyConnected: { type: String },
+	createdAt: { type: String },
+	updatedAt: { type: String }
 });
 
 userSchema.pre<IUser>('save', async function (next) {
@@ -94,13 +54,12 @@ userSchema.pre<IUser>('findOneAndUpdate', function (next) {
 	next();
 });
 
-userSchema.methods.lastConnected = async function () {
-	this.recentlyConnected = moment().format('YYYY-MM-DD HH:mm:ss');
+userSchema.methods.comparePassword = async function (plainPassword: string) {
+	return await bcrypt.compare(plainPassword, this.password);
 };
 
-userSchema.methods.comparePassword = async function (plainPassword: string) {
-	const isMatch = await bcrypt.compare(plainPassword, this.password);
-	return isMatch;
+userSchema.methods.lastConnected = async function () {
+	this.recentlyConnected = moment().format('YYYY-MM-DD HH:mm:ss');
 };
 
 userSchema.methods.editPassword = async function (plainPassword: string) {
@@ -111,22 +70,26 @@ userSchema.methods.editPassword = async function (plainPassword: string) {
 };
 
 userSchema.methods.forgotPassword = async function () {
-	this.resetToken = await crypto.randomBytes(5).toString('hex');
+	this.resetToken = crypto.randomBytes(5).toString('hex');
 	this.expireToken = Date.now() + 3600000;
-	// this.expireToken = moment().format('YYYY-MM-DD HH:mm:ss') + 3600000;
 	this.save();
 	return this.resetToken;
 };
 
 userSchema.methods.resetPassword = async function (newPassword: string) {
+	// if (this.passwordHistory.includes(newPassword)) {
+	// 	throw new Error('You have used this password before');
+	// }
+	// this.passwordHistory.push(await bcrypt.hash(newPassword, 10));
+	// this.passwordHistory.push(newPassword);
 	this.password = newPassword;
 	this.resetToken = undefined;
 	this.expireToken = undefined;
 	this.save();
 };
 
-userSchema.methods.editImageProfile = async function (imgSRC: string) {
-	this.imgSRC = imgSRC;
+userSchema.methods.editImageProfile = async function (imgSrc: string) {
+	this.imgSrc = imgSrc;
 	this.updatedAt = moment().format('YYYY-MM-DD HH:mm:ss');
 	this.save();
 };
@@ -142,5 +105,4 @@ userSchema.methods.deleteAcToken = function () {
 	this.save();
 };
 
-const User = model<IUser>('User', userSchema);
-export default User;
+export default model<IUser>('User', userSchema);
