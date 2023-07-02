@@ -13,8 +13,8 @@ export const isLoginByToken = createAsyncThunk('authentication/isLoginByToken', 
 	return data;
 });
 
-export const logoutByToken = createAsyncThunk('auth/logoutByToken', async (values: any) => {
-	const data = await logout(values);
+export const logoutByToken = createAsyncThunk('auth/logoutByToken', async () => {
+	const data = await logout();
 	return data;
 });
 
@@ -93,8 +93,8 @@ export const authSlice = createSlice({
 				state.token = null;
 				state.isTokenChecked = false;
 				state.user = null;
-				removeCookie('ac-token', { path: '/' });
-				removeCookie('userId', { path: '/' });
+				removeCookie('ac-token', { path: '/ ' });
+				removeCookie('userId', { path: '/ ' });
 			})
 
 			// Handle Forgot Password?

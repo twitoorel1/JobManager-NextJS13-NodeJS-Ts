@@ -71,6 +71,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 	}
 }
 
+/*
 export async function logout(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { token } = req.body;
@@ -80,6 +81,20 @@ export async function logout(req: Request, res: Response, next: NextFunction) {
 		if (!user) return next(new NotFoundError('User not found'));
 		user.deleteAcToken();
 		res.status(200).send('Logout Successful').end();
+	} catch (error: any) {
+		console.log(error.message);
+	}
+}
+*/
+export async function logout(req: Request, res: Response, next: NextFunction) {
+	try {
+		const { token } = req.body;
+		const { userId } = req.user;
+		if (!token && !userId) return next(new UnauthorizeError('Token And UserID not provided'));
+		const user = await User.findById(userId).select(REMOVE_USER_FIELDS);
+		if (!user) return next(new NotFoundError('User not found'));
+		user.deleteAcToken();
+		res.status(200).send({ error: false, message: 'Logout Successful' });
 	} catch (error: any) {
 		console.log(error.message);
 	}

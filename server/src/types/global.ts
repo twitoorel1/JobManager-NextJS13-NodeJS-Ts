@@ -91,6 +91,7 @@ export interface IJob extends Document {
 	city: string;
 	standards: number;
 	status: EStatusJob;
+	candidatesAssigned?: Types.ObjectId[];
 	createdAt: Date | number | string | any;
 	updatedAt?: Date | number | string | any;
 }
@@ -115,6 +116,7 @@ export interface ICandidate extends Document {
 export interface ICandidateAssignment extends Document {
 	candidate: Types.ObjectId | ICandidate;
 	company: Types.ObjectId | ICompany;
+	job: Types.ObjectId | IJob;
 	status: EStatusCandidate;
 	createdAt: Date | number | string | any;
 	updatedAt?: Date | number | string | any;

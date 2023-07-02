@@ -11,6 +11,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import { logoutByToken } from '@/features/authentication/redux/authSlice';
 import { classNames, getFileFromPublicFolder } from '@/utils/general';
+import { getCookie } from '@/utils/cookies';
 
 interface INavbar {
 	setSidebarOpen?: any;
@@ -21,9 +22,10 @@ const Navbar = ({ setSidebarOpen, userNavigation }: INavbar) => {
 	const router = useRouter();
 	const dispatch: ThunkDispatch<{}, {}, AnyAction> = useDispatch();
 	const { user } = useAuthContext();
+	const userId = getCookie('userId');
 
 	const LogoutUser = async () => {
-		await dispatch(logoutByToken(user?._id));
+		await dispatch(logoutByToken());
 		router.push('/login');
 	};
 

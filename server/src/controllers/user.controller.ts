@@ -7,7 +7,7 @@ import { REMOVE_USER_FIELDS, REMOVE_COMPANY_FIELDS } from '../constants/user.con
 import { editPasswordRequestSchema, registerRequestSchema } from '../validators/authRequests.schema';
 import errorHandlerYup from '../errors/errorHandlerYup';
 import { sendEmail } from '../services';
-import { ICompany, ERoles } from '../types/global';
+import { ERoles, ICompany } from '../types/global';
 
 /* Routes For All User */
 export const findById = async (req: Request, res: Response, next: NextFunction) => {
@@ -66,7 +66,7 @@ export const editImageProfileById = async (req: Request, res: Response, next: Ne
 export const sendEmailByUserId = async (req: Request, res: Response, next: NextFunction) => {
 	const { subject, description } = req.body;
 
-	const user = await User.findById(req.user.userId).select('company').populate({ path: 'company', select: REMOVE_COMPANY_FIELDS });
+	const user = await User.findById(req.user.userId).select(REMOVE_USER_FIELDS).populate({ path: 'company', select: REMOVE_COMPANY_FIELDS });
 	if (!user) return next(new NotFoundError('User Not Found'));
 	const clientName = (user?.company as ICompany)?.name;
 

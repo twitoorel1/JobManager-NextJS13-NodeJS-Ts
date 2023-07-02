@@ -23,16 +23,16 @@ export const findAllJobsByIdCompany = async (req: Request, res: Response, next: 
 		{ path: 'company', select: REMOVE_COMPANY_FIELDS },
 		{ path: 'createdJob', select: REMOVE_USER_FIELDS }
 	]);
-	if (!allJobs) return next(new NotFoundError('Jobs not found'));
+	if (allJobs.length === 0) return next(new NotFoundError('Jobs not found'));
 	res.status(200).json({ error: false, allJobs });
 };
 
 export const createJobByIDCompany = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		await jobRequestSchema.validate(req.body, { abortEarly: false });
-		let idJob = crypto.randomBytes(4).toString('hex').toUpperCase();
+		let idJob = crypto.randomBytes(3).toString('hex').toUpperCase();
 		const findJob = await Job.findOne({ idJob });
-		if (findJob) idJob = crypto.randomBytes(3).toString('hex').toUpperCase();
+		if (findJob) idJob = crypto.randomBytes(4).toString('hex').toUpperCase();
 
 		const newJob = await Job.create({
 			...req.body,

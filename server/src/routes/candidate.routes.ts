@@ -37,7 +37,7 @@ DELETE - DeleteCandidateAssignmentByIdAndIdCompany (By ID Candidate And ID Compa
 router.get('/find/allCandidateByIdCompany/:idCompany', (req, res, next) => checkUserByIdCompany(req.params.idCompany)(req, res, next), catchAsyncError(findAllCandidatesAssignmentsByIdCompany));
 router.get('/findOne/:idCompany/:idCandidate', (req, res, next) => checkUserByIdCompany(req.params.idCompany)(req, res, next), catchAsyncError(findCandidateAssignmentByIdAndIdCompany));
 router.patch('/updateStatus/:idCompany/:idCandidate', (req, res, next) => checkUserByIdCompany(req.params.idCompany)(req, res, next), catchAsyncError(updateStatusCandidateAssignmentByIdAndIdCompany));
-router.delete('/delete/:idCompany/:idCandidate', (req, res, next) => checkUserByIdCompany(req.params.idCompany)(req, res, next), catchAsyncError(deleteCandidateAssignmentByIdAndIdCompany));
+router.delete('/delete/:idCompany/:idJob/:idCandidate', (req, res, next) => checkUserByIdCompany(req.params.idCompany)(req, res, next), catchAsyncError(deleteCandidateAssignmentByIdAndIdCompany));
 
 /* Routes For Employee */
 router.get('/employee/find/:idCandidate', authRole(ERoles.employee), catchAsyncError(findById));
@@ -46,7 +46,7 @@ router.get('/employee/findAll', authRole(ERoles.employee), catchAsyncError(findA
 router.post('/employee/create', authRole(ERoles.employee), catchAsyncError(createCandidate));
 
 router.put('/employee/update/:idCandidate', authRole(ERoles.employee), catchAsyncError(updateCandidateById));
-router.patch('/employee/updateAssigned/:idCompany/:idCandidate', authRole(ERoles.employee), catchAsyncError(updateAssignedCandidate));
+router.patch('/employee/updateAssigned/:idCompany/:idJob/:idCandidate', authRole(ERoles.employee), catchAsyncError(updateAssignedCandidate));
 
 /* Routes For Admin */
 router.delete('/admin/delete/:idCandidate', authRole(ERoles.employee), catchAsyncError(deleteCandidate));

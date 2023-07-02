@@ -25,6 +25,7 @@ const jobSchema: Schema<IJob> = new Schema({
 		},
 		default: EStatusJob.pendingApproval
 	},
+	candidatesAssigned: [{ type: Schema.Types.ObjectId, ref: 'CandidateAssignment', default: [] }],
 	createdAt: { type: String },
 	updatedAt: { type: String }
 });

@@ -71,8 +71,6 @@ export interface EditImageProfileInputs {
 }
 
 export interface SendBugsInputs {
-	fullName: string;
-	clientName: string;
 	subject: string;
 	description: string;
 }

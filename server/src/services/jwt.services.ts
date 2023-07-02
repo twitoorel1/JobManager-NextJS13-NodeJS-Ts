@@ -9,7 +9,9 @@ const jwtConfig = {
 
 export const createAccessToken = (userId: string, role: string, company: Schema.Types.ObjectId) => {
 	try {
-		const token = jwt.sign({ userId, role, company }, jwtConfig.ac_secret);
+		const token = jwt.sign({ userId, role, company }, jwtConfig.ac_secret, {
+			expiresIn: '5y'
+		});
 		return token;
 	} catch (error) {
 		console.log(error);

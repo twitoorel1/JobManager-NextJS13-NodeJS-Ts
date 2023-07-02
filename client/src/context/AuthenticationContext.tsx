@@ -7,7 +7,7 @@ import { isLoginByToken } from '@/features/authentication/redux/authSlice';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { AuthState, RootState } from '@/types/global';
-import { getCookie } from '@/utils/cookies';
+import { getCookie, removeCookie } from '@/utils/cookies';
 import useLoader from '@/hooks/useLoader';
 
 const Loader = lazy(() => import('@/components/common/Loader'));
@@ -39,6 +39,17 @@ export function AuthProvider({ children }: AuthContextProps) {
 	const router = useRouter();
 	const pathname = usePathname();
 	const { isAuthenticated, user, isError, isTokenChecked, isLoading, isSending } = useSelector((state: RootState) => state.auth);
+
+	// useEffect(() => {
+	// 	setTimeout(() => {
+	// 		removeCookie('ac-token');
+	// 		removeCookie('userId');
+	// 		if (user === null) {
+	// 			router.push('/login');
+	// 		}
+	// 	}, 1000);
+	// }, []);
+
 
 	useEffect(() => {
 		if (getCookie('ac-token')) {

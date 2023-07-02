@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import Candidate from '../models/candidate.model';
 import CandidateAssignment from '../models/candidateAssignment.model';
 import Company from '../models/company.model';
+import Job from '../models/job.model';
 import moment from 'moment';
 import crypto from 'crypto';
 import { BadRequestError, NotFoundError, ServerError, UnauthorizeError } from '../errors/Errors';
@@ -16,7 +17,8 @@ export const findAllCandidatesAssignmentsByIdCompany = async (req: Request, res:
 		.select(REMOVE_CANDIDATE_FIELDS)
 		.populate([
 			{ path: 'candidate', select: REMOVE_CANDIDATE_FIELDS, populate: { path: 'createdCandidate', select: REMOVE_USER_FIELDS } },
-			{ path: 'company', select: REMOVE_COMPANY_FIELDS }
+			{ path: 'company', select: REMOVE_COMPANY_FIELDS },
+			{ path: 'job', select: REMOVE_CANDIDATE_FIELDS, populate: { path: 'createdJob', select: REMOVE_USER_FIELDS } }
 		]);
 	if (allCandidateAssignmentFind.length === 0) return next(new NotFoundError('Candidate Assignment Not Found'));
 	res.status(200).json({ error: false, candidate: allCandidateAssignmentFind });
@@ -29,7 +31,8 @@ export const findCandidateAssignmentByIdAndIdCompany = async (req: Request, res:
 		.select(REMOVE_CANDIDATE_FIELDS)
 		.populate([
 			{ path: 'candidate', select: REMOVE_CANDIDATE_FIELDS, populate: { path: 'createdCandidate', select: REMOVE_USER_FIELDS } },
-			{ path: 'company', select: REMOVE_COMPANY_FIELDS }
+			{ path: 'company', select: REMOVE_COMPANY_FIELDS },
+			{ path: 'job', select: REMOVE_CANDIDATE_FIELDS, populate: { path: 'createdJob', select: REMOVE_USER_FIELDS } }
 		]);
 	if (!CandidateAssignmentFind) return next(new NotFoundError('Candidate Assignment Not Found'));
 	res.status(200).json({ error: false, candidate: CandidateAssignmentFind });
@@ -72,6 +75,7 @@ export const deleteCandidateAssignmentByIdAndIdCompany = async (req: Request, re
 	await CandidateAssignment.findByIdAndDelete(CandidateAssignmentFind._id);
 	await Candidate.findByIdAndUpdate(req.params.idCandidate, { $pull: { companyAssigned: req.params.idCompany } }, { new: true });
 	await Company.findByIdAndUpdate(req.params.idCompany, { $pull: { candidatesAssigned: req.params.idCandidate }, $inc: { candidateNumber: -1 } }, { new: true });
+	await Job.findByIdAndUpdate(req.params.idJob, { $pull: { candidatesAssigned: req.params.idCandidate } }, { new: true });
 	res.status(200).json({ error: false, message: 'Candidate Assignment deleted successfully' });
 };
 
@@ -91,9 +95,9 @@ export const findAllCandidates = async (req: Request, res: Response, next: NextF
 export const createCandidate = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		await candidateRequestsSchema.validate(req.body, { abortEarly: false });
-		let idCandidate = crypto.randomBytes(4).toString('hex').toUpperCase();
+		let idCandidate = crypto.randomBytes(3).toString('hex').toUpperCase();
 		const findCandidate = await Candidate.findOne({ idCandidate });
-		if (findCandidate) idCandidate = crypto.randomBytes(3).toString('hex').toUpperCase();
+		if (findCandidate) idCandidate = crypto.randomBytes(4).toString('hex').toUpperCase();
 
 		const newCandidate = await Candidate.create({
 			...req.body,
@@ -138,7 +142,7 @@ export const updateAssignedCandidate = async (req: Request, res: Response, next:
 		]);
 	if (!candidateFind) return next(new NotFoundError('Candidate not found'));
 	const companyExist = candidateFind.companyAssigned.toString();
-	if (companyExist.includes(req.params.idCompany)) return next(new UnauthorizeError('Company Exist at this candidate'));
+	if (companyExist.includes(req.params.idCompany)) return next(new UnauthorizeError('Candidate Exist At This Company'));
 
 	const company = await Company.findById(req.params.idCompany).select(REMOVE_COMPANY_FIELDS);
 	if (company?.name === 'Boeing HRM') return next(new UnauthorizeError('There is no access to the Boeing company to assign a position'));
@@ -160,9 +164,11 @@ export const updateAssignedCandidate = async (req: Request, res: Response, next:
 	await CandidateAssignment.create({
 		candidate: req.params.idCandidate,
 		company: req.params.idCompany,
+		job: req.params.idJob,
 		status: EStatusCandidate.sendedToInterview
 	});
 	await Company.findByIdAndUpdate(req.params.idCompany, { $push: { candidatesAssigned: req.params.idCandidate }, $inc: { candidateNumber: 1 } }, { new: true });
+	await Job.findByIdAndUpdate(req.params.idJob, { $push: { candidatesAssigned: req.params.idCandidate } }, { new: true });
 	res.status(200).json({ error: false, message: 'Candidate Company Assigned updated successfully', candidate });
 };
 

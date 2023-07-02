@@ -20,11 +20,9 @@ const Helper = () => {
 		register,
 		handleSubmit,
 		reset,
-		formState: { errors, isSubmitSuccessful }
+		formState: { isSubmitSuccessful }
 	} = useForm<SendBugsInputs>({
 		defaultValues: {
-			fullName: `${user?.firstName} ${user?.lastName}`,
-			clientName: 'נירלט',
 			subject: '',
 			description: ''
 		},
@@ -71,18 +69,8 @@ const Helper = () => {
 
 						<form onSubmit={handleSubmit(onSubmitSendBugs)} className="py-4 px-20">
 							<Input id="sendBugsFullName" type="text" defaultValue={`${user?.firstName} ${user?.lastName}`} disabled showLabel label="שם מלא" />
-							<Input
-								id="sendBugsClient"
-								type="text"
-								defaultValue={'נירלט'}
-								placeholder="שם הלקוח"
-								showLabel
-								label="שם הלקוח"
-								disabled
-								register={{ ...register('clientName') }}
-							/>
+							<Input id="sendBugsClient" type="text" defaultValue={user?.company.name} showLabel label="שם הלקוח" disabled />
 							<Input id="sendBugsSubject" type="text" placeholder="נושא התקלה" showLabel label="נושא התקלה" register={{ ...register('subject') }} />
-
 							<Input
 								id="sendBugsDescription"
 								type="text"
@@ -110,40 +98,6 @@ const Helper = () => {
 					</div>
 				</div>
 			)}
-
-			{/* {openHelper && (
-				<div className="fixed bg-white border border-[#11182753] left-20 bottom-28 rounded-xl shadow-default p-8 w-1/5 h-max-2/3">
-					<XCircleIcon width={25} height={25} onClick={() => setOpenHelper(prev => prev === false)} className="cursor-pointer" />
-					<div className="border-b border-[#E2E8F0] py-4 px-7 flex items-center justify-center">
-						<h3 className="font-bold text-black text-xl">תמיכה טכנית</h3>
-					</div>
-					<form onSubmit={handleSubmit(onSubmitSendBugs)}>
-						<Input id="sendBugsFullName" type="text" defaultValue={`${user?.firstName} ${user?.lastName}`} disabled showLabel label="שם מלא" />
-						<Input
-							id="sendBugsClient"
-							type="text"
-							defaultValue={'נירלט'}
-							placeholder="שם הלקוח"
-							showLabel
-							label="שם הלקוח"
-							disabled
-							register={{ ...register('clientName') }}
-						/>
-						<Input id="sendBugsSubject" type="text" placeholder="נושא התקלה" showLabel label="נושא התקלה" register={{ ...register('subject') }} />
-
-						<Input
-							id="sendBugsDescription"
-							type="text"
-							placeholder="הסבר על התקלה"
-							showLabel
-							label="הסבר על התקלה"
-							register={{ ...register('description') }}
-						/>
-
-						<Button label="שליחת תקלה" className="rounded-md" />
-					</form>
-				</div>
-			)} */}
 		</div>
 	);
 };

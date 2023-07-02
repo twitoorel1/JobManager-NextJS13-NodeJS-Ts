@@ -41,8 +41,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			icon: FolderIcon,
 			submenu: true,
 			submenuItems: [
-				{ name: 'רשימת משרות', href: '/Jobs', icon: UsersIcon },
-				{ name: 'צור משרה חדש', href: '/Jobs/create', icon: ChartPieIcon }
+				{ name: 'רשימת משרות', href: '/jobs', icon: UsersIcon },
+				{ name: 'צור משרה חדש', href: '/jobs/create', icon: ChartPieIcon }
 			]
 		},
 		{

@@ -5,6 +5,7 @@ import moment from 'moment';
 const candidateAssignmentSchema: Schema<ICandidateAssignment> = new Schema({
 	candidate: { type: Schema.Types.ObjectId, ref: 'Candidate', required: false },
 	company: { type: Schema.Types.ObjectId, ref: 'Company', required: false },
+	job: { type: Schema.Types.ObjectId, ref: 'Job', required: false },
 	status: {
 		type: String,
 		validate: {
