@@ -1,6 +1,9 @@
 export interface RootState {
 	auth: AuthState;
 	user: UserState;
+	client: ClientState;
+	candidate: CandidateState;
+	job: JobState;
 }
 
 type LayoutProps = {
@@ -73,4 +76,62 @@ export interface EditImageProfileInputs {
 export interface SendBugsInputs {
 	subject: string;
 	description: string;
+}
+
+// Client
+export interface ClientState {
+	isLoading: boolean;
+	isSending: boolean;
+	message: string | null;
+	isError: boolean;
+	error: any;
+	client?: {
+		_id: string;
+		name: string;
+		bnNumber?: string;
+		email?: string;
+		phone?: string;
+		address?: {
+			city: string;
+			street: string;
+			zipCode: string;
+		};
+	} | null;
+	allClients?: Array<ClientState['client']>;
+}
+
+export interface CreateClientInputs {
+	fullName: string;
+	bnNumber: string;
+	email: string;
+	phone: string;
+	city?: string;
+	street?: string;
+	zipCode?: string;
+}
+
+// Candidate
+export interface CreateCandidateInputs {
+	fullName: string;
+	IdNumber: string;
+	email?: string;
+	phone: string;
+	city: string;
+	street: string;
+	zipCode: string;
+	age: string | number;
+	gender: string;
+}
+
+// Job
+export interface CreateJobInputs {
+	title: string;
+	category: string;
+	type: string;
+	description: string;
+	salaryPrice: number | string;
+	salaryType: string;
+	branch: string;
+	city: string;
+	standards: string;
 }

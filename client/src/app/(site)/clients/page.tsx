@@ -1,30 +1,32 @@
-import React from 'react';
+'use client';
+import React, { useEffect } from 'react';
 import Button from '@/components/common/Button';
 import Link from 'next/link';
 import { EyeIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 
-const people = [
-	{
-		id: 1,
-		name: 'סוויספורט שירותי מטען',
-		bnNumber: 505025151,
-		email: 'office@swissport.co.il',
-		phone: '085151411',
-		address: 'נמל התעופה בן גוריון 107',
-		jobNumbers: 5,
-		candidateNumber: 3
-	},
-	{
-		id: 2,
-		name: 'נירלט',
-		bnNumber: 535025151,
-		email: 'office@nirlat.co.il',
-		phone: '08331511211',
-		address: 'קיבוץ ניר עוז',
-		jobNumbers: 13,
-		candidateNumber: 23
-	}
-];
+
+// const people = [
+// 	{
+// 		id: 1,
+// 		name: 'סוויספורט שירותי מטען',
+// 		bnNumber: 505025151,
+// 		email: 'office@swissport.co.il',
+// 		phone: '085151411',
+// 		address: 'נמל התעופה בן גוריון 107',
+// 		jobNumbers: 5,
+// 		candidateNumber: 3
+// 	},
+// 	{
+// 		id: 2,
+// 		name: 'נירלט',
+// 		bnNumber: 535025151,
+// 		email: 'office@nirlat.co.il',
+// 		phone: '08331511211',
+// 		address: 'קיבוץ ניר עוז',
+// 		jobNumbers: 13,
+// 		candidateNumber: 23
+// 	}
+// ];
 
 export const metadata = {
 	title: 'Clients',
@@ -33,6 +35,7 @@ export const metadata = {
 };
 
 const Clients = () => {
+
 	return (
 		<div className="px-4 sm:px-6 lg:px-8">
 			<div className="sm:flex sm:items-center">

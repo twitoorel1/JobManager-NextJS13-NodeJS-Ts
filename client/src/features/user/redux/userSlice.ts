@@ -23,7 +23,7 @@ const initialState: UserState = {
 	isSending: false,
 	message: null,
 	isError: false,
-	error: null
+	error: undefined
 };
 
 export const authSlice = createSlice({
