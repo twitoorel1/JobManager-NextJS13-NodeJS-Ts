@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post('/register', upload.single('imgSrc'), catchAsyncError(register));
 router.post('/login', catchAsyncError(login));
-router.post('/logout/:userId', authJwtTokenVerify, catchAsyncError(logout));
+router.post('/logout', authJwtTokenVerify, catchAsyncError(logout));
 router.post('/isLogin', catchAsyncError(isLogin));
 router.post('/forgotPassword', catchAsyncError(forgotPassword));
 router.post('/reset/:resetToken', catchAsyncError(resetPassword));

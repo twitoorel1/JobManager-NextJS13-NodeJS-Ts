@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import Button from '@/components/common/Button';
 import Link from 'next/link';
 import { EyeIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
-
+import AllClients from '../../../features/client/components/allClients';
 
 // const people = [
 // 	{
@@ -35,7 +35,6 @@ export const metadata = {
 };
 
 const Clients = () => {
-
 	return (
 		<div className="px-4 sm:px-6 lg:px-8">
 			<div className="sm:flex sm:items-center">
@@ -80,7 +79,7 @@ const Clients = () => {
 										משרות
 									</th>
 									<th scope="col" className="py-3.5 pl-4 pr-3 text-sm font-semibold text-gray-900 sm:pl-0">
-										מעומדים
+										מועמדים
 									</th>
 									<th scope="col" className="py-3.5 pl-4 pr-3 text-sm font-semibold text-gray-900 sm:pl-0">
 										פעולות
@@ -89,25 +88,7 @@ const Clients = () => {
 							</thead>
 
 							<tbody className="text-center">
-								{people.map((item, index) => (
-									<tr key={index}>
-										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.name}</td>
-										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.bnNumber}</td>
-										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.email}</td>
-										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.phone}</td>
-										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.address}</td>
-										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.jobNumbers}</td>
-										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.candidateNumber}</td>
-										<td className="relative flex items-center justify-center whitespace-nowrap py-4 px-4 text-center text-sm font-medium">
-											<Link href={`/clients/${item.id}/edit`} className="text-[#0073EA] hover:text-[#0060b9] px-3">
-												<PencilSquareIcon width={15} />
-											</Link>
-											<Link href={`/clients/${item.id}`} className="text-[#0073EA] hover:text-[#0060b9] px-3">
-												<EyeIcon width={15} />
-											</Link>
-										</td>
-									</tr>
-								))}
+								<AllClients />
 							</tbody>
 						</table>
 					</div>

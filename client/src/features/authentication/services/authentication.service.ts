@@ -24,10 +24,8 @@ export async function isLogin() {
 export async function logout() {
 	try {
 		const token = getCookie('ac-token');
-		const userId = getCookie('userId');
 		if (!token) await Promise.reject();
-		const response = await api.post(`auth/logout/${userId}`, { token });
-		console.log(response);
+		const response = await api.post(`auth/logout`, { token });
 		return response.data;
 	} catch (error: any) {
 		return Promise.reject(error.response?.data?.message || error.message || 'Server Error');

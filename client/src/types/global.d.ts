@@ -110,6 +110,18 @@ export interface CreateClientInputs {
 	zipCode?: string;
 }
 
+export interface EditClientInputs {
+	name: string;
+	bnNumber: string;
+	// email: string;
+	// phone: string;
+	// address: {
+	// 	city: string;
+	// 	street: string;
+	// 	zipCode: string;
+	// };
+}
+
 // Candidate
 export interface CreateCandidateInputs {
 	fullName: string;

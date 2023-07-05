@@ -19,7 +19,7 @@ Post - CreateCompany (Only Admin Role)
 router.get('/employee/find/:companyId', authRole(ERoles.employee), catchAsyncError(findById));
 router.get('/employee/allCompanies', authRole(ERoles.employee), catchAsyncError(findAllCompanies));
 
-router.put('/employee/update/:companyId', authRole(ERoles.employee), catchAsyncError(updateCompanyById));
+router.patch('/employee/update/:companyId', authRole(ERoles.employee), catchAsyncError(updateCompanyById));
 
 /* Routes For Only Admin */
 router.post('/admin/create', authRole(ERoles.employee), catchAsyncError(createCompany));

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { ClientState } from '@/types/global';
-import { findAllCompany, findCompanyById, createClient } from '../services/client.service';
+import { ClientState, EditClientInputs } from '@/types/global';
+import { findAllCompany, findCompanyById, createClient, EditClientById } from '../services/client.service';
 
 export const findAllCompanies = createAsyncThunk('client/findAllCompanies', async () => {
 	const data = await findAllCompany();
@@ -16,6 +16,14 @@ export const createNewClient = createAsyncThunk('client/createNewClient', async 
 	const data = await createClient(formValue);
 	return data;
 });
+
+export const editClientWithIdClient = createAsyncThunk(
+	'client/editClientWithIdClient',
+	async ({ clientId, formValue }: { clientId: string; formValue: object }) => {
+		const data = await EditClientById(clientId, formValue);
+		return data;
+	}
+);
 
 const initialState: ClientState = {
 	isLoading: false,
@@ -79,9 +87,24 @@ export const clientSlice = createSlice({
 				state.isLoading = false;
 				state.isSending = true;
 				state.message = payload.message;
+				state.client = payload.company;
 				state.isError = false;
 				state.error = undefined;
+			})
+
+			// Handle Edit Client By Id
+			.addCase(editClientWithIdClient.pending, state => {
+				state.isLoading = true;
+				state.isError = false;
+				state.error = undefined;
+			})
+			.addCase(editClientWithIdClient.fulfilled, (state, { payload }: any) => {
+				state.isLoading = false;
+				state.isSending = true;
+				state.message = payload.message;
 				state.client = payload.company;
+				state.isError = false;
+				state.error = undefined;
 			})
 
 			// Handle All Rejected
